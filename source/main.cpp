@@ -31,6 +31,15 @@ const SDL_Color BLUE{55,95,255,255};
 const SDL_Color GREEN{40,210,125,255};
 const SDL_Color RED{245,75,90,255};
 
+void ensureDirectory(const std::string& path) {
+    std::string current;
+    for (char ch : path) {
+        current += ch;
+        if (ch == '/' && current.size() > 6) mkdir(current.c_str(), 0777);
+    }
+    if (!current.empty() && current.back() != '/') mkdir(current.c_str(), 0777);
+}
+
 void text(const std::string& value, int x, int y, SDL_Color color, TTF_Font* useFont = nullptr) {
     if (value.empty()) return;
     SDL_Surface* surface = TTF_RenderUTF8_Blended(useFont ? useFont : font, value.c_str(), color);
@@ -208,7 +217,8 @@ int details(const Config::DownloadItem& item, std::size_t index) {
             text("Download / Install",935,252,WHITE);
         }
         text("Destination",880,350,GREY,fontSmall);
-        const std::string destination=(item.extractPath&&item.extractPath[0])?item.extractPath:(std::string(Config::DEST_DIR)+item.fileName);
+        const std::string directory=(item.destinationPath&&item.destinationPath[0])?item.destinationPath:Config::DEST_DIR;
+        const std::string destination=item.extractZip?directory:(directory+item.fileName);
         text(destination,880,390,WHITE,fontSmall);
         footer(hasMirror?"Left/Right  Select icon      A  Download      B  Back":"A  Download      B  Back");
         SDL_RenderPresent(renderer);
@@ -225,7 +235,7 @@ bool promptUpdate(const UpdateInfo& update) {
         begin("Software Update");
         frame(215,150,850,390,{75,82,98,255},2);
         text("A new version is available",380,205,WHITE);
-        text("Installed: 1.2.0",420,280,GREY,fontSmall);
+        text("Installed: 1.2.1",420,280,GREY,fontSmall);
         text("Latest: "+update.version,420,320,GREEN,fontSmall);
         SDL_SetRenderDrawColor(renderer,20,48,145,255);
         SDL_Rect b{385,390,510,70}; SDL_RenderFillRect(renderer,&b);
@@ -283,9 +293,11 @@ int main(int argc,char** argv) {
             const int mirror=details(Config::DOWNLOADS[choice],choice);
             if(mirror<0) continue;
             const auto& item=Config::DOWNLOADS[choice];
-            const bool archive=item.extractPath&&item.extractPath[0];
+            const bool archive=item.extractZip;
+            const std::string destination=(item.destinationPath&&item.destinationPath[0])?item.destinationPath:Config::DEST_DIR;
+            ensureDirectory(destination);
             const std::string output=archive?(std::string(Config::TEMP_DIR)+"/"+item.fileName)
-                                            :(std::string(Config::DEST_DIR)+item.fileName);
+                                            :(destination+item.fileName);
             std::string error;
             const char* selectedUrl=mirror==1?item.mirrorUrl:item.url;
             bool ok=downloadFile(selectedUrl,output,error);
@@ -293,11 +305,11 @@ int main(int argc,char** argv) {
                 begin("Installing cheats");
                 text("Extracting ZIP...",500,320,WHITE);
                 SDL_RenderPresent(renderer);
-                ok=extractZipTo(output,item.extractPath,error);
+                ok=extractZipTo(output,destination,error);
                 remove(output.c_str());
             }
             showMessage(ok?"Download complete":"Download failed",
-                        ok?(archive?"Files extracted to gbastation/3ds":"File saved directly to roms/3ds"):error,
+                        ok?(archive?("Files extracted to "+destination):("File saved to "+destination)):error,
                         ok?GREEN:RED);
         }
 

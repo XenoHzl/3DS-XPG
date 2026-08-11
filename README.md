@@ -5,6 +5,8 @@ A graphical download manager for Nintendo Switch homebrew, built with libnx and 
 Features include a paginated library, D-pad navigation, cover images, background music,
 mirrors, ZIP extraction, safe file replacement, and GitHub Release self-updates.
 
+Version 1.2.1 adds a per-item destination directory and an explicit ZIP extraction flag.
+
 ## Configure downloads
 
 Edit `include/config.hpp`. Add only homebrew, patches, or other files you own or are

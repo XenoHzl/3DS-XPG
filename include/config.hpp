@@ -10,11 +10,12 @@ struct DownloadItem {
     const char* fileName;
     const char* coverPath;
     const char* mirrorUrl;
-    const char* extractPath;
+    const char* destinationPath = "sdmc:/roms/3ds/";
+    bool extractZip = false;
 };
 
 // Add only files you own or are authorized to redistribute.
-// Leave mirrorUrl/extractPath as nullptr when they are not needed.
+// Set destinationPath per item. Set extractZip=true only for ZIP archives.
 constexpr DownloadItem DOWNLOADS[] = {
     {
         "Example homebrew package",
@@ -23,7 +24,8 @@ constexpr DownloadItem DOWNLOADS[] = {
         "homebrew.zip",
         "sdmc:/switch/3DS_Eshop_XPG/images/example.png",
         nullptr,
-        "sdmc:/switch/3DS_Eshop_XPG/downloads/"
+        "sdmc:/switch/3DS_Eshop_XPG/downloads/",
+        true
     }
 };
 
