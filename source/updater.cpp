@@ -5,9 +5,27 @@
 #include <cstdlib>
 
 namespace {
-constexpr const char* CURRENT_VERSION = "1.2.1";
+constexpr const char* CURRENT_VERSION = "1.2.2";
 constexpr const char* RELEASE_API = "https://api.github.com/repos/XenoHzl/3DS-XPG/releases/latest";
 constexpr const char* ASSET_NAME = "3DS_Eshop_XPG.nro";
+
+bool copyFile(const std::string& source, const std::string& destination) {
+    FILE* input = fopen(source.c_str(), "rb");
+    if (!input) return false;
+    FILE* output = fopen(destination.c_str(), "wb");
+    if (!output) { fclose(input); return false; }
+    char buffer[64 * 1024];
+    bool ok = true;
+    while (true) {
+        const size_t count = fread(buffer, 1, sizeof(buffer), input);
+        if (count && fwrite(buffer, 1, count, output) != count) { ok = false; break; }
+        if (count < sizeof(buffer)) { if (ferror(input)) ok = false; break; }
+    }
+    if (fflush(output) != 0) ok = false;
+    fclose(output);
+    fclose(input);
+    return ok;
+}
 
 size_t memoryWrite(char* data, size_t size, size_t count, void* userdata) {
     auto* output = static_cast<std::string*>(userdata);
@@ -56,7 +74,7 @@ UpdateInfo checkForUpdate() {
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 8L);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 15L);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "3DS-Eshop-XPG-Updater/1.2.1");
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "3DS-Eshop-XPG-Updater/1.2.2");
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, memoryWrite);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &json);
     const CURLcode result = curl_easy_perform(curl);
@@ -83,12 +101,13 @@ bool installUpdate(const UpdateInfo& info, const std::string& currentNroPath, st
     remove(pending.c_str());
     if (!downloadFile(info.downloadUrl, pending, error)) return false;
     remove(backup.c_str());
-    if (rename(currentNroPath.c_str(), backup.c_str()) != 0) {
+    if (!copyFile(currentNroPath, backup)) {
         remove(pending.c_str()); error = "Cannot create update backup"; return false;
     }
-    if (rename(pending.c_str(), currentNroPath.c_str()) != 0) {
-        rename(backup.c_str(), currentNroPath.c_str());
+    if (!copyFile(pending, currentNroPath)) {
+        copyFile(backup, currentNroPath);
         remove(pending.c_str()); error = "Cannot replace current NRO"; return false;
     }
+    remove(pending.c_str());
     return true;
 }
