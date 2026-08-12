@@ -235,7 +235,7 @@ bool promptUpdate(const UpdateInfo& update) {
         begin("Software Update");
         frame(215,150,850,390,{75,82,98,255},2);
         text("A new version is available",380,205,WHITE);
-        text("Installed: 1.2.6",420,280,GREY,fontSmall);
+        text("Installed: 1.2.8",420,280,GREY,fontSmall);
         text("Latest: "+update.version,420,320,GREEN,fontSmall);
         SDL_SetRenderDrawColor(renderer,20,48,145,255);
         SDL_Rect b{385,390,510,70}; SDL_RenderFillRect(renderer,&b);
@@ -282,8 +282,8 @@ int main(int argc,char** argv) {
                 std::string error;
                 const std::string currentPath=(argc>0 && argv && argv[0])?argv[0]:"";
                 const bool updated=installUpdate(update,currentPath,error);
-                showMessage(updated?"Update ready":"Update failed",
-                            updated?"Please Restart Software":error,
+                showMessage(updated?"Update Downloaded":"Update failed",
+                            updated?"Exit, then open 3DS Eshop XPG Updater":error,
                             updated?GREEN:RED);
                 if(updated) { exitRequested=true; break; }
             } else {
