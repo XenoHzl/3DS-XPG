@@ -6,7 +6,7 @@
 #include <sys/stat.h>
 
 namespace {
-constexpr const char* CURRENT_VERSION = "1.2.9";
+constexpr const char* CURRENT_VERSION = "1.3.0";
 constexpr const char* RELEASE_API = "https://api.github.com/repos/XenoHzl/3DS-XPG/releases/latest";
 constexpr const char* ASSET_NAME = "3DS_Eshop_XPG.nro";
 constexpr const char* HELPER_NAME = "3DS_Eshop_XPG_Updater.nro";
@@ -58,7 +58,7 @@ UpdateInfo checkForUpdate() {
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 8L);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 15L);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "3DS-Eshop-XPG-Updater/1.2.9");
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "3DS-Eshop-XPG-Updater/1.3.0");
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, memoryWrite);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &json);
     const CURLcode result = curl_easy_perform(curl);
