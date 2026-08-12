@@ -3,9 +3,10 @@
 #include <curl/curl.h>
 #include <cstdio>
 #include <cstdlib>
+#include <sys/stat.h>
 
 namespace {
-constexpr const char* CURRENT_VERSION = "1.2.8";
+constexpr const char* CURRENT_VERSION = "1.2.9";
 constexpr const char* RELEASE_API = "https://api.github.com/repos/XenoHzl/3DS-XPG/releases/latest";
 constexpr const char* ASSET_NAME = "3DS_Eshop_XPG.nro";
 constexpr const char* HELPER_NAME = "3DS_Eshop_XPG_Updater.nro";
@@ -57,7 +58,7 @@ UpdateInfo checkForUpdate() {
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 8L);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 15L);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "3DS-Eshop-XPG-Updater/1.2.8");
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "3DS-Eshop-XPG-Updater/1.2.9");
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, memoryWrite);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &json);
     const CURLcode result = curl_easy_perform(curl);
@@ -83,10 +84,12 @@ bool installUpdate(const UpdateInfo& info, const std::string& currentNroPath, st
         return false;
     }
     const std::string pending = currentNroPath + ".new";
-    const std::string helper = "sdmc:/switch/3DS_Eshop_XPG/3DS_Eshop_XPG_Updater.nro";
+    const std::string helperDir = "sdmc:/switch/3DS_Eshop_XPG_Updater";
+    const std::string helper = helperDir + "/3DS_Eshop_XPG_Updater.nro";
     const std::string target = "sdmc:/switch/3DS_Eshop_XPG/update_target.txt";
     remove(pending.c_str());
     if (!downloadFile(info.downloadUrl, pending, error)) return false;
+    mkdir(helperDir.c_str(), 0777);
     if (!downloadFile(info.helperUrl, helper, error)) { remove(pending.c_str()); return false; }
     FILE* targetFile = fopen(target.c_str(), "wb");
     if (!targetFile) { remove(pending.c_str()); error = "Cannot prepare update target"; return false; }

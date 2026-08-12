@@ -18,7 +18,7 @@ INCLUDES    := include
 
 APP_TITLE   := 3DS Eshop XPG
 APP_AUTHOR  := XPerfect
-APP_VERSION := 1.2.8
+APP_VERSION := 1.2.9
 APP_ICON    := $(CURDIR)/icon.jpg
 
 ARCH        := -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
