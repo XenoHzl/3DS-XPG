@@ -1,0 +1,36 @@
+TARGET := 3DS_Eshop_XPG_Updater
+LIBNX := $(DEVKITPRO)/libnx
+BUILD := build_helper
+SOURCES := updater_helper
+APP_TITLE := 3DS Eshop XPG Updater
+APP_AUTHOR := XPerfect
+APP_VERSION := 1.0.0
+ARCH := -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
+CFLAGS := -g -Wall -O2 -ffunction-sections -fdata-sections $(ARCH) -D__SWITCH__
+CXXFLAGS := $(CFLAGS) $(INCLUDE) -std=gnu++17 -fno-rtti -fno-exceptions
+LDFLAGS := -specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH)
+LIBS := -lnx
+LIBDIRS := $(LIBNX)
+include $(DEVKITPRO)/libnx/switch_rules
+ifneq ($(BUILD),$(notdir $(CURDIR)))
+export OUTPUT := $(CURDIR)/$(TARGET)
+export TOPDIR := $(CURDIR)
+export VPATH := $(CURDIR)/$(SOURCES)
+export DEPSDIR := $(CURDIR)/$(BUILD)
+CPPFILES := $(notdir $(wildcard $(SOURCES)/*.cpp))
+export LD := $(CXX)
+export OFILES := $(CPPFILES:.cpp=.o)
+export INCLUDE := -IC:/devkitPro/libnx/include -I$(CURDIR)/$(BUILD)
+export LIBPATHS := -LC:/devkitPro/libnx/lib
+all: $(BUILD)
+$(BUILD):
+	@[ -d $@ ] || mkdir -p $@
+	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile.helper
+clean:
+	@rm -fr $(BUILD) $(TARGET).nro $(TARGET).nacp $(TARGET).elf
+else
+DEPENDS := $(OFILES:.o=.d)
+$(OUTPUT).nro: $(OUTPUT).elf $(OUTPUT).nacp
+$(OUTPUT).elf: $(OFILES)
+-include $(DEPENDS)
+endif

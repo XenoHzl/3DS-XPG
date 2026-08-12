@@ -1,13 +1,17 @@
 #include "updater.hpp"
 #include "downloader.hpp"
 #include <curl/curl.h>
+extern "C" {
+#include <switch/runtime/env.h>
+}
 #include <cstdio>
 #include <cstdlib>
 
 namespace {
-constexpr const char* CURRENT_VERSION = "1.2.3";
+constexpr const char* CURRENT_VERSION = "1.2.4";
 constexpr const char* RELEASE_API = "https://api.github.com/repos/XenoHzl/3DS-XPG/releases/latest";
 constexpr const char* ASSET_NAME = "3DS_Eshop_XPG.nro";
+constexpr const char* HELPER_NAME = "3DS_Eshop_XPG_Updater.nro";
 
 bool copyFile(const std::string& source, const std::string& destination) {
     FILE* input = fopen(source.c_str(), "rb");
@@ -74,7 +78,7 @@ UpdateInfo checkForUpdate() {
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 8L);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 15L);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "3DS-Eshop-XPG-Updater/1.2.3");
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "3DS-Eshop-XPG-Updater/1.2.4");
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, memoryWrite);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &json);
     const CURLcode result = curl_easy_perform(curl);
@@ -87,7 +91,10 @@ UpdateInfo checkForUpdate() {
     std::size_t asset = json.find(std::string("\"name\":\"") + ASSET_NAME + "\"");
     if (asset == std::string::npos) asset = json.find(ASSET_NAME);
     if (asset != std::string::npos) info.downloadUrl = jsonString(json, "browser_download_url", asset);
-    if (!info.version.empty() && !info.downloadUrl.empty()) info.available = newerThanCurrent(info.version);
+    std::size_t helper = json.find(std::string("\"name\":\"") + HELPER_NAME + "\"");
+    if (helper == std::string::npos) helper = json.find(HELPER_NAME);
+    if (helper != std::string::npos) info.helperUrl = jsonString(json, "browser_download_url", helper);
+    if (!info.version.empty() && !info.downloadUrl.empty() && !info.helperUrl.empty()) info.available = newerThanCurrent(info.version);
     return info;
 }
 
@@ -97,17 +104,15 @@ bool installUpdate(const UpdateInfo& info, const std::string& currentNroPath, st
         return false;
     }
     const std::string pending = currentNroPath + ".new";
-    const std::string backup = currentNroPath + ".bak";
+    const std::string helper = "sdmc:/switch/3DS_Eshop_XPG/3DS_Eshop_XPG_Updater.nro";
+    const std::string target = "sdmc:/switch/3DS_Eshop_XPG/update_target.txt";
     remove(pending.c_str());
     if (!downloadFile(info.downloadUrl, pending, error)) return false;
-    remove(backup.c_str());
-    if (!copyFile(currentNroPath, backup)) {
-        remove(pending.c_str()); error = "Cannot create update backup"; return false;
-    }
-    if (!copyFile(pending, currentNroPath)) {
-        copyFile(backup, currentNroPath);
-        remove(pending.c_str()); error = "Cannot replace current NRO"; return false;
-    }
-    remove(pending.c_str());
+    if (!downloadFile(info.helperUrl, helper, error)) { remove(pending.c_str()); return false; }
+    FILE* targetFile = fopen(target.c_str(), "wb");
+    if (!targetFile) { remove(pending.c_str()); error = "Cannot prepare update target"; return false; }
+    fwrite(currentNroPath.data(), 1, currentNroPath.size(), targetFile);
+    fclose(targetFile);
+    envSetNextLoad(helper.c_str(), helper.c_str());
     return true;
 }

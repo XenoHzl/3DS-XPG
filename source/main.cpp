@@ -235,7 +235,7 @@ bool promptUpdate(const UpdateInfo& update) {
         begin("Software Update");
         frame(215,150,850,390,{75,82,98,255},2);
         text("A new version is available",380,205,WHITE);
-        text("Installed: 1.2.3",420,280,GREY,fontSmall);
+        text("Installed: 1.2.4",420,280,GREY,fontSmall);
         text("Latest: "+update.version,420,320,GREEN,fontSmall);
         SDL_SetRenderDrawColor(renderer,20,48,145,255);
         SDL_Rect b{385,390,510,70}; SDL_RenderFillRect(renderer,&b);
@@ -282,9 +282,10 @@ int main(int argc,char** argv) {
                 std::string error;
                 const std::string currentPath=(argc>0 && argv && argv[0])?argv[0]:"";
                 const bool updated=installUpdate(update,currentPath,error);
-                showMessage(updated?"Update installed":"Update failed",
-                            updated?"Restart the application to use the new version":error,
+                showMessage(updated?"Update ready":"Update failed",
+                            updated?"Please Restart Software":error,
                             updated?GREEN:RED);
+                if(updated) { exitRequested=true; break; }
             } else {
                 showMessage("Software Update",update.error.empty()?"No new version is available":update.error,
                             update.error.empty()?GREEN:RED);
