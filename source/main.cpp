@@ -5,6 +5,9 @@
 #include "updater.hpp"
 
 #include <switch.h>
+extern "C" {
+#include <switch/runtime/env.h>
+}
 #include <curl/curl.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -235,7 +238,7 @@ bool promptUpdate(const UpdateInfo& update) {
         begin("Software Update");
         frame(215,150,850,390,{75,82,98,255},2);
         text("A new version is available",380,205,WHITE);
-        text("Installed: 1.3.0",420,280,GREY,fontSmall);
+        text("Installed: 1.3.1",420,280,GREY,fontSmall);
         text("Latest: "+update.version,420,320,GREEN,fontSmall);
         SDL_SetRenderDrawColor(renderer,20,48,145,255);
         SDL_Rect b{385,390,510,70}; SDL_RenderFillRect(renderer,&b);
@@ -244,6 +247,18 @@ bool promptUpdate(const UpdateInfo& update) {
         padUpdate(&pad); const u64 k=padGetButtonsDown(&pad);
         if(k&HidNpadButton_A) return true;
         if(k&HidNpadButton_B) return false;
+    }
+    return false;
+}
+
+bool promptRestart() {
+    while(appletMainLoop()) {
+        begin("Update Success"); frame(215,190,850,300,{70,78,98,255},2);
+        filledCircleRGBA(renderer,640,275,42,GREEN.r,GREEN.g,GREEN.b,255);
+        text("Update Success",500,350,WHITE); footer("A  Restart      B  Later"); SDL_RenderPresent(renderer);
+        padUpdate(&pad); const u64 keys=padGetButtonsDown(&pad);
+        if(keys&HidNpadButton_A) return true;
+        if(keys&HidNpadButton_B) return false;
     }
     return false;
 }
@@ -282,10 +297,13 @@ int main(int argc,char** argv) {
                 std::string error;
                 const std::string currentPath=(argc>0 && argv && argv[0])?argv[0]:"";
                 const bool updated=installUpdate(update,currentPath,error);
-                showMessage(updated?"Update Downloaded":"Update failed",
-                            updated?"Exit, then open 3DS Eshop XPG Updater":error,
-                            updated?GREEN:RED);
-                if(updated) { exitRequested=true; break; }
+                if(updated) {
+                    if(promptRestart()) {
+                        const Result rc=envSetNextLoad(currentPath.c_str(),currentPath.c_str());
+                        if(R_SUCCEEDED(rc)) { exitRequested=true; break; }
+                        showMessage("Restart failed","Update installed. Exit and reopen the app",RED);
+                    }
+                } else showMessage("Update failed",error,RED);
             } else {
                 showMessage("Software Update",update.error.empty()?"No new version is available":update.error,
                             update.error.empty()?GREEN:RED);
