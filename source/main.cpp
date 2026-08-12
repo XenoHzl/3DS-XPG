@@ -235,7 +235,7 @@ bool promptUpdate(const UpdateInfo& update) {
         begin("Software Update");
         frame(215,150,850,390,{75,82,98,255},2);
         text("A new version is available",380,205,WHITE);
-        text("Installed: 1.2.2",420,280,GREY,fontSmall);
+        text("Installed: 1.2.3",420,280,GREY,fontSmall);
         text("Latest: "+update.version,420,320,GREEN,fontSmall);
         SDL_SetRenderDrawColor(renderer,20,48,145,255);
         SDL_Rect b{385,390,510,70}; SDL_RenderFillRect(renderer,&b);
