@@ -7,14 +7,49 @@
 #include <sys/stat.h>
 
 namespace {
-constexpr const char* CURRENT_VERSION = "1.3.3";
+constexpr const char* CURRENT_VERSION = "1.3.4";
 constexpr const char* RELEASE_API = "https://api.github.com/repos/XenoHzl/3DS-XPG/releases/latest";
 constexpr const char* ASSET_NAME = "3DS_Eshop_XPG.nro";
 constexpr const char* HELPER_NAME = "3DS_Eshop_XPG_Updater.nro";
 
-constexpr const char* UPDATE_DIR = "sdmc:/switch/3DS_Eshop_XPG";
-constexpr const char* HELPER_PATH = "sdmc:/switch/3DS_Eshop_XPG/3DS_Eshop_XPG_Updater.nro";
-constexpr const char* TARGET_FILE = "sdmc:/switch/3DS_Eshop_XPG/update_target.txt";
+bool copyFileStdio(const std::string& source, const std::string& destination) {
+    FILE* input = fopen(source.c_str(), "rb");
+    if (!input) return false;
+    FILE* output = fopen(destination.c_str(), "wb");
+    if (!output) { fclose(input); return false; }
+    char buffer[64 * 1024]; bool ok = true;
+    while (true) {
+        const size_t count = fread(buffer, 1, sizeof(buffer), input);
+        if (count && fwrite(buffer, 1, count, output) != count) { ok = false; break; }
+        if (count < sizeof(buffer)) { if (ferror(input)) ok = false; break; }
+    }
+    if (fflush(output) != 0) ok = false;
+    fclose(output); fclose(input); return ok;
+}
+
+bool overwriteNative(const std::string& source, const std::string& destination, std::string& error) {
+    FILE* input = fopen(source.c_str(), "rb");
+    if (!input) { error = "Cannot open downloaded update"; return false; }
+    fseek(input, 0, SEEK_END); const long size = ftell(input); rewind(input);
+    if (size <= 0) { fclose(input); error = "Downloaded update is empty"; return false; }
+    FsFileSystem* filesystem = nullptr; char nativePath[FS_MAX_PATH]{};
+    if (fsdevTranslatePath(destination.c_str(), &filesystem, nativePath) < 0 || !filesystem) {
+        fclose(input); error = "Cannot translate NRO path"; return false;
+    }
+    FsFile output{}; Result rc = fsFsOpenFile(filesystem, nativePath, FsOpenMode_Write, &output);
+    if (R_FAILED(rc)) { fclose(input); error = "Cannot open current NRO after RomFS unmount"; return false; }
+    rc = fsFileSetSize(&output, size); char buffer[64 * 1024]; s64 offset = 0;
+    while (R_SUCCEEDED(rc) && offset < size) {
+        const size_t wanted = (size - offset) < (long)sizeof(buffer) ? (size_t)(size - offset) : sizeof(buffer);
+        const size_t count = fread(buffer, 1, wanted, input);
+        if (count != wanted) { rc = MAKERESULT(Module_Libnx, 1); break; }
+        rc = fsFileWrite(&output, offset, buffer, count, FsWriteOption_None); offset += count;
+    }
+    if (R_SUCCEEDED(rc)) rc = fsFileFlush(&output);
+    fsFileClose(&output); fclose(input);
+    if (R_FAILED(rc)) { error = "Native FS write failed"; return false; }
+    return true;
+}
 
 size_t memoryWrite(char* data, size_t size, size_t count, void* userdata) {
     auto* output = static_cast<std::string*>(userdata);
@@ -63,7 +98,7 @@ UpdateInfo checkForUpdate() {
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 8L);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 15L);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "3DS-Eshop-XPG-Updater/1.3.3");
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "3DS-Eshop-XPG-Updater/1.3.4");
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, memoryWrite);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &json);
     const CURLcode result = curl_easy_perform(curl);
@@ -91,13 +126,13 @@ bool installUpdate(const UpdateInfo& info, const std::string& currentNroPath, st
     const std::string pending = currentNroPath + ".new";
     remove(pending.c_str());
     if (!downloadFile(info.downloadUrl, pending, error)) return false;
-    if (info.helperUrl.empty()) { remove(pending.c_str()); error="Updater asset is missing"; return false; }
-    mkdir(UPDATE_DIR, 0777);
-    if (!downloadFile(info.helperUrl, HELPER_PATH, error)) { remove(pending.c_str()); return false; }
-    FILE* target=fopen(TARGET_FILE,"wb");
-    if(!target){remove(pending.c_str());error="Cannot create update target";return false;}
-    const bool wrote=fwrite(currentNroPath.data(),1,currentNroPath.size(),target)==currentNroPath.size() && fflush(target)==0;
-    fclose(target);
-    if(!wrote){remove(pending.c_str());remove(TARGET_FILE);error="Cannot save update target";return false;}
+    const std::string backup = currentNroPath + ".bak";
+    remove(backup.c_str());
+    if (!copyFileStdio(currentNroPath, backup)) { remove(pending.c_str()); error="Cannot create update backup"; return false; }
+    if (!overwriteNative(pending, currentNroPath, error)) {
+        std::string restoreError; overwriteNative(backup, currentNroPath, restoreError);
+        remove(pending.c_str()); return false;
+    }
+    remove(pending.c_str());
     return true;
 }
