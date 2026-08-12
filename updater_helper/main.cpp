@@ -5,25 +5,48 @@ extern "C" {
 #include <cstdio>
 #include <string>
 
-static bool copyFile(const std::string& source, const std::string& destination) {
-    FILE* input=fopen(source.c_str(),"rb"); if(!input) return false;
-    FILE* output=fopen(destination.c_str(),"wb"); if(!output){fclose(input);return false;}
-    char buffer[64*1024]; bool ok=true;
-    while(true){size_t n=fread(buffer,1,sizeof(buffer),input);if(n&&fwrite(buffer,1,n,output)!=n){ok=false;break;}if(n<sizeof(buffer)){if(ferror(input))ok=false;break;}}
-    if(fflush(output)!=0) ok=false; fclose(output); fclose(input); return ok;
+namespace {
+constexpr const char* TARGET_FILE = "sdmc:/switch/3DS_Eshop_XPG/update_target.txt";
+constexpr const char* LOG_FILE = "sdmc:/switch/3DS_Eshop_XPG/update.log";
+
+void logResult(const char* message) {
+    FILE* log = fopen(LOG_FILE, "wb");
+    if (log) { fputs(message, log); fclose(log); }
+}
+
+std::string readTarget() {
+    FILE* file = fopen(TARGET_FILE, "rb");
+    if (!file) return {};
+    char path[1024]{};
+    const size_t count = fread(path, 1, sizeof(path) - 1, file);
+    fclose(file);
+    return std::string(path, count);
+}
+
+void waitForChoice(const std::string& target, bool success) {
+    consoleInit(nullptr);
+    padConfigureInput(1, HidNpadStyleSet_NpadStandard);
+    PadState pad; padInitializeDefault(&pad);
+    printf("\x1b[2J\x1b[1;1H3DS Eshop XPG Updater\n\n");
+    if (success) printf("Update Success\n\n[A] Reboot\n[B] Return to Homebrew Menu\n");
+    else printf("Update Failed\n\nCheck:\n%s\n\n[B] Return to Homebrew Menu\n", LOG_FILE);
+    consoleUpdate(nullptr);
+    while (appletMainLoop()) {
+        padUpdate(&pad); const u64 keys = padGetButtonsDown(&pad);
+        if (success && (keys & HidNpadButton_A)) { envSetNextLoad(target.c_str(), target.c_str()); break; }
+        if (keys & HidNpadButton_B) break;
+        svcSleepThread(20000000ULL);
+    }
+    consoleExit(nullptr);
+}
 }
 
 int main() {
-    const char* targetFile="sdmc:/switch/3DS_Eshop_XPG/update_target.txt";
-    FILE* file=fopen(targetFile,"rb"); if(!file) return 1;
-    char path[1024]{}; const size_t n=fread(path,1,sizeof(path)-1,file); fclose(file);
-    if(!n) return 1;
-    const std::string target(path,n), pending=target+".new", backup=target+".bak";
-    svcSleepThread(500000000ULL);
-    remove(backup.c_str());
-    if(!copyFile(target,backup)) return 2;
-    if(!copyFile(pending,target)){copyFile(backup,target);return 3;}
-    remove(pending.c_str()); remove(targetFile);
-    envSetNextLoad(target.c_str(),target.c_str());
-    return 0;
+    const std::string target = readTarget();
+    if (target.empty()) { logResult("Cannot read update target"); waitForChoice(target, false); return 0; }
+    const std::string pending = target + ".new", backup = target + ".bak";
+    svcSleepThread(500000000ULL); remove(backup.c_str());
+    if (rename(target.c_str(), backup.c_str()) != 0) { logResult("Cannot rename current NRO to backup"); waitForChoice(target, false); return 0; }
+    if (rename(pending.c_str(), target.c_str()) != 0) { rename(backup.c_str(), target.c_str()); logResult("Cannot rename pending NRO to current NRO"); waitForChoice(target, false); return 0; }
+    remove(TARGET_FILE); logResult("Update Success"); waitForChoice(target, true); return 0;
 }
