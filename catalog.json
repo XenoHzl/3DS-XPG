@@ -275,3 +275,14 @@
     "category": "3ds"
   }
 ]
+{
+  "Digimon World 4 (USA)",
+    "ENG version",
+    "https://drive.usercontent.google.com/download?id=1oyL29EQ4O78issfIOdo9kEKAtVfDZ2Ac&export=download&confirm=t",
+    "Digimon World 4 (USA).chd",
+    "sdmc:/switch/3DS_Eshop_XPG/images/ps2/Digimon World 4 (USA).png",
+    "",
+    "sdmc:/roms/ps2/",
+    false,
+    DownloadCategory::PlayStation2
+}
