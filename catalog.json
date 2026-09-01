@@ -285,4 +285,37 @@
     "extract": false,
     "category": "ps2"
   }
+  {
+    "title": "Digimon Rumble Arena 2",
+    "description": "ENG version",
+    "url": "https://drive.usercontent.google.com/download?id=1GfiSLuzR7sg0PoPtkP9CJFC67AFhrXHd&export=download&confirm=t",
+    "fileName": "Digimon Rumble Arena 2.chd",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/ps2/Digimon Rumble Arena 2.png",
+    "mirrorUrl": "",
+    "destinationPath": "sdmc:/roms/ps2/",
+    "extract": false,
+    "category": "ps2"
+  }
+  {
+    "title": "Soul Sacrifice Delta",
+    "description": "CH version",
+    "url": "https://drive.usercontent.google.com/download?id=1cfM8ah7Kxd9xXLGMyjV757dDqOSF7ITO&export=download&confirm=t",
+    "fileName": "PCSD00079.zip",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/psv/Soul Sacrifice Delta.png",
+    "mirrorUrl": "",
+    "destinationPath": "sdmc:switch/vita3k/vita/ux0/app",
+    "extract": true,
+    "category": "psvita"
+  }
+  {
+    "title": "Muramasa Rebirth",
+    "description": "ENG version",
+    "url": "https://dl7b.retrogametalk.com/download.php?file=Muramasa%20Rebirth%20%28v1.06%29%28USA%29%28PCSE00240%29%5Bvita3k%5D.zip&id=255164&platform=vita&key=21341102658",
+    "fileName": "Muramasa Rebirth (v1.06)(USA)(PCSE00240)[vita3k].zip",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/psv/Muramasa Rebirth.png",
+    "mirrorUrl": "",
+    "destinationPath": "sdmc:switch/vita3k/vita/ux0/app",
+    "extract": true,
+    "category": "psvita"
+  }
 ]
