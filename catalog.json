@@ -283,6 +283,6 @@
     "sdmc:/switch/3DS_Eshop_XPG/images/ps2/Digimon World 4 (USA).png",
     "",
     "sdmc:/roms/ps2/",
-    false,
-    DownloadCategory::PlayStation2
+    "extract": false,
+    "category": "ps2"
 }
