@@ -317,5 +317,16 @@
     "destinationPath": "sdmc:/switch/vita3k/vita/ux0/app",
     "extract": true,
     "category": "psvita"
+  },
+  {
+    "title": "Oboro Muramasa",
+    "description": "CH version",
+    "url": "https://drive.usercontent.google.com/download?id=1hpX8L5XiYMmVRqcyb6354WoJoC4UdpEL&export=download&confirm=t",
+    "fileName": "PCSG00150.zip",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/psv/Oboro Muramasa.png",
+    "mirrorUrl": "",
+    "destinationPath": "sdmc:/switch/vita3k/vita/ux0/app",
+    "extract": true,
+    "category": "psvita"
   }
 ]
