@@ -32,6 +32,17 @@
     "extract": true,
     "category": "tools"
   },
+   {
+    "title": "GBA Station",
+    "description": "选择线路后下载并自动解压",
+    "url": "https://drive.usercontent.google.com/download?id=1MRS38PYD4PO_XdwpvCglMfSA-Eh_1zRt&export=download&confirm=t",
+    "fileName": "GBA Station.zip",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/GBAStation2.png",
+    "mirrorUrl": "",
+    "destinationPath": "sdmc:/",
+    "extract": true,
+    "category": "tools"
+  },
   {
     "title": "宝可梦 究极之月",
     "description": "简体中文版",
