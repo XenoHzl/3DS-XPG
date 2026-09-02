@@ -11,6 +11,17 @@
     "category": "tools"
   },
   {
+    "title": "PS2 PSVITA",
+    "description": "选择线路后下载并自动解压",
+    "url": "https://drive.usercontent.google.com/download?id=128ons9GTJ79SpBOIoRcoS-1Z1iRaXAlH&export=download&confirm=t",
+    "fileName": "PS Station.zip",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/PS2V.png",
+    "mirrorUrl": "",
+    "destinationPath": "sdmc:/",
+    "extract": true,
+    "category": "tools"
+  },
+  {
     "title": "宝可梦 究极之月",
     "description": "简体中文版",
     "url": "https://drive.usercontent.google.com/download?id=1-w05PKRC4JEya2poofbP9txtemZ7SRP8&export=download&confirm=t",
