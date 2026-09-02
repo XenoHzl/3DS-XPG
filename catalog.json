@@ -22,6 +22,17 @@
     "category": "tools"
   },
   {
+    "title": "Pokemon Gen1ReComp",
+    "description": "选择线路后下载并自动解压",
+    "url": "https://drive.usercontent.google.com/download?id=1XyzLlmaZ2DJJ4U4pqTOoN8B1QqurUpi2&export=download&confirm=t",
+    "fileName": "Pokemon.zip",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/Gen1ReComp.png",
+    "mirrorUrl": "",
+    "destinationPath": "sdmc:/",
+    "extract": true,
+    "category": "tools"
+  },
+  {
     "title": "宝可梦 究极之月",
     "description": "简体中文版",
     "url": "https://drive.usercontent.google.com/download?id=1-w05PKRC4JEya2poofbP9txtemZ7SRP8&export=download&confirm=t",
