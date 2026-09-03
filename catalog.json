@@ -13,10 +13,10 @@
   {
     "title": "PS2 PSVITA",
     "description": "选择线路后下载并自动解压",
-    "url": "https://drive.usercontent.google.com/download?id=128ons9GTJ79SpBOIoRcoS-1Z1iRaXAlH&export=download&confirm=t",
+    "url": "https://drive.usercontent.google.com/download?id=1E52IunLQvTjZfVHqUYSE2pGN6IFORHAx&export=download&confirm=t",
     "fileName": "PS Station.zip",
     "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/PS2V.png",
-    "mirrorUrl": "",
+    "mirrorUrl": "https://drive.usercontent.google.com/download?id=128ons9GTJ79SpBOIoRcoS-1Z1iRaXAlH&export=download&confirm=t",
     "destinationPath": "sdmc:/",
     "extract": true,
     "category": "tools"
