@@ -361,4 +361,5 @@
     "destinationPath": "sdmc:/switch/vita3k/vita/ux0/app",
     "extract": true,
     "category": "psvita"
-  },
+  }
+]
