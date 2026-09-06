@@ -330,6 +330,17 @@
     "category": "ps2"
   },
   {
+    "title": "Dragon Crown",
+    "description": "CH version",
+    "url": "https://drive.usercontent.google.com/download?id=1m0_G6V7UnkdxpP3dgWJAsrl9sc61srPz&export=download&confirm=t",
+    "fileName": "PCSH00050.zip",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/psvita/Dragon Crown.png",
+    "mirrorUrl": "",
+    "destinationPath": "sdmc:/switch/vita3k/vita/ux0/app",
+    "extract": true,
+    "category": "psvita"
+  },
+  {
     "title": "Oboro Muramasa",
     "description": "CH version",
     "url": "https://drive.usercontent.google.com/download?id=1_QUZiuVtJA4_3wQxdPWRlwL1l4ltycuK&export=download&confirm=t",
