@@ -319,6 +319,17 @@
     "category": "3ds"
   },
   {
+    "title": "Resident Evil 4",
+    "description": "中文版",
+    "url": "https://drive.usercontent.google.com/download?id=1nDImJxHLxGmXXLesDeltz2o4yL3KxHLJ&export=download&confirm=t",
+    "fileName": "Resident Evil 4.chd",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/ps2/Resident Evil 4.png",
+    "mirrorUrl": "",
+    "destinationPath": "sdmc:/roms/ps2/",
+    "extract": false,
+    "category": "ps2"
+  },
+  {
     "title": "Digimon World 4 (USA)",
     "description": "ENG version",
     "url": "https://drive.usercontent.google.com/download?id=1oyL29EQ4O78issfIOdo9kEKAtVfDZ2Ac&export=download&confirm=t",
