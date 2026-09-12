@@ -15,8 +15,19 @@
     "description": "选择线路后下载并自动解压",
     "url": "https://drive.usercontent.google.com/download?id=1DrsYvK-p-SXttEVjV2-JeGWlXV2-ZW4f&export=download&confirm=t",
     "fileName": "Digimon World CN.zip",
-    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/tools//DigimonWorld-CN.png",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/tools/DigimonWorld-CN.png",
     "mirrorUrl": "https://drive.usercontent.google.com/download?id=1X-MS3_ml6UBoz3x8ybEX4tZ4VA5lzefX&export=download&confirm=t",
+    "destinationPath": "sdmc:/",
+    "extract": true,
+    "category": "tools"
+  },
+  {
+    "title": "PS 修复中文字",
+    "description": "选择线路后下载并自动解压",
+    "url": "https://drive.usercontent.google.com/download?id=1sL3whse0bX59uvym-bR3BmVX1VuaGM3g&export=download&confirm=t",
+    "fileName": "PlayStation.zip",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/tools/PS.png",
+    "mirrorUrl": "",
     "destinationPath": "sdmc:/",
     "extract": true,
     "category": "tools"
