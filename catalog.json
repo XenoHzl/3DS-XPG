@@ -341,6 +341,17 @@
     "category": "3ds"
   },
   {
+    "title": "WWE SmackDown! Here Comes the Pain",
+    "description": "英文版",
+    "url": "https://drive.usercontent.google.com/download?id=1I99nGc31Ipy9r4faGkGNSnj7nXVJ__uG&export=download&confirm=t",
+    "fileName": "WWE SmackDown! Here Comes the Pain.chd",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/ps2/WWE SmackDown! Here Comes the Pain.png",
+    "mirrorUrl": "",
+    "destinationPath": "sdmc:/roms/ps2/",
+    "extract": false,
+    "category": "ps2"
+  },
+  {
     "title": "Resident Evil 4",
     "description": "中文版",
     "url": "https://drive.usercontent.google.com/download?id=1nDImJxHLxGmXXLesDeltz2o4yL3KxHLJ&export=download&confirm=t",
