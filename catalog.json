@@ -22,6 +22,17 @@
     "category": "tools"
   },
   {
+    "title": "PS 数码卡片竞技场2 完整版",
+    "description": "选择线路后下载并自动解压",
+    "url": "https://drive.usercontent.google.com/download?id=1m3dhq4u8SMyzkqDiH4C0J6W8-u2rIC7j&export=download&confirm=t",
+    "fileName": "Digimon Card Arena TC.zip",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/tools/Digimon Card Arena TC.png",
+    "mirrorUrl": "",
+    "destinationPath": "sdmc:/",
+    "extract": true,
+    "category": "tools"
+  },
+  {
     "title": "PS 修复中文字",
     "description": "选择线路后下载并自动解压",
     "url": "https://drive.usercontent.google.com/download?id=1sL3whse0bX59uvym-bR3BmVX1VuaGM3g&export=download&confirm=t",
