@@ -55,6 +55,17 @@
     "category": "tools"
   },
   {
+    "title": "Ultra Street Fighter IV 简中汉化补丁",
+    "description": "选择线路后下载并自动解压",
+    "url": "https://drive.usercontent.google.com/download?id=1qaMYTF6FN8WuJ3chPhRFafaZaxNADWOv&export=download&confirm=t",
+    "fileName": "StreetFighter4CN.zip",
+    "coverPath": "sdmc:/switch/3DS_Eshop_XPG/images/tools/Ultra Street Fighter IV.png",
+    "mirrorUrl": "",
+    "destinationPath": "sdmc:/",
+    "extract": true,
+    "category": "tools"
+  },
+  {
     "title": "合金装备4简中汉化补丁",
     "description": "选择线路后下载并自动解压",
     "url": "https://drive.usercontent.google.com/download?id=1C9xtFN_sRVZgXo2gzzqcHmeIgeKJN9H_&export=download&confirm=t",
